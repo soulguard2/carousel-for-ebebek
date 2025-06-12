@@ -1,4 +1,4 @@
-(()=>{
+(()=>{ //readme.md dosyasında proje hakkında bazı bilgiler var
     const init = () => {
         // Bulunduğu url kontrolü yapma
         const currentUrl = window.location.href;
