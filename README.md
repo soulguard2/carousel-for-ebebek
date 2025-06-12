@@ -16,7 +16,7 @@ Bu yapamadığım kısmı teknik ekiple konuşmak isterim.
 // carousel kısmı dolayısıyla dosyada tüm productların gözüktüğü bir html var user storylerin testi için
 // Burayada carousel e benzeyen ama sağ ve sol tuşlarının çalışmadığı bir versiyonu koyacağım.
 
-   /* const buildHTML = () => {
+   <!-- /* const buildHTML = () => {
         const products = JSON.parse(localStorage.getItem('products'));
         const html = `
             <div class="banner">
@@ -108,4 +108,4 @@ Bu yapamadığım kısmı teknik ekiple konuşmak isterim.
         if (productCarousel) { // Replikasını yapmak istediğimiz yerin üst kısmına html ekleme
             productCarousel.insertAdjacentHTML('afterbegin', html);
         }
-    } */
+    } */ -->
