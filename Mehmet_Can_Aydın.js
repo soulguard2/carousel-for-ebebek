@@ -1,22 +1,47 @@
-# carousel-for-ebebek
+(()=>{
+    const init = () => {
+        // Bulunduğu url kontrolü yapma
+        const currentUrl = window.location.href;
+    
+        if (currentUrl === 'https://www.e-bebek.com/') {
+            takeItems(); // En başta product kontrolü yapılıyor
+            buildCSS(); // css kurulumu
+        } else {
+            console.log('Wrong page');
+        }
+    };
 
-# Mehmet Can Aydın
+    
+    const takeItems = () => {
+        // LocalStorage kontrolü
+        const checkProducts = localStorage.getItem('products');
+        if (checkProducts) {
+            const products = JSON.parse(checkProducts);
+            console.log("Local Storage Products", products);
+            buildHTML(products); // Veri varsa HTML oluşturma
+        } else { //fetch ile veri alma
+            fetch('https://gist.githubusercontent.com/sevindi/8bcbde9f02c1d4abe112809c974e1f49/raw/9bf93b58df623a9b16f1db721cd0a7a539296cf0/products.json', {method: 'GET'})
+                .then(response => response.json())
+                .then(data => {
+                    //favorileri kontrol etmek için ürünlerin içine favorite variable yerleştirdim
+                    const dataWithFavorite = data.map(product => ({
+                        ...product,
+                        favorite: false
+                    }));
+                    localStorage.setItem('products', JSON.stringify(dataWithFavorite));
+                    console.log("New Data", dataWithFavorite);
+                    buildHTML(dataWithFavorite); // Veri alındıktan sonra HTML oluşturma
+                })
+                .catch(error => console.log(error));
+        }
+    };
 
-Bilgilendirme:
-
-PDf te belirtilen stories kısmı olmadığı için kodumu, en üstün bir altında bulunan carousel den önce çalışması içi ayarladım.
-Direk "Chrome Developer Tools console"da çalışacak şekilde ayarlıdır.
-İstenilen tüm user storyleri karşılasada carousel kısmında sorun yaşadığım için tamamlanamamıştır.
-Bunun sebebi sitede bulunan carousel kısmında swiper kullanılmasıydı.
-Pixel perfect replikasını yaparken sitedeki css ve html kodlarından faydalandım ama karmaşık yapısı yüzünden carousel kısmını çalıştıramadım.
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-// carousel kısmı dolayısıyla dosyada tüm productların gözüktüğü bir html var user storylerin testi için
-// Burayada carousel e benzeyen ama sağ ve sol tuşlarının çalışmadığı bir versiyonu koyacağım.
-
-   /* const buildHTML = () => {
-        const products = JSON.parse(localStorage.getItem('products'));
+    const buildHTML = (products) => {
+        // const products = JSON.parse(localStorage.getItem('products'));
+        // if (!products) {
+        //     console.log("Product ile ilgili bir hata oluştu");
+        //     return;
+        // }
         const html = `
             <div class="banner">
                 <div class="container">
@@ -24,16 +49,15 @@ Pixel perfect replikasını yaparken sitedeki css ve html kodlarından faydaland
                         <h2 class="title-primary">Beğenebileceğinizi düşündüklerimiz</h2>
                     </div>
                     <div ebvisibilityobserver class="banner__wrapper ins-preview-wrapper-10167 ng-star-inserted"> 
-                        <owl-carousel-o class="product-list__best-products" _nghost-serverapp-c124="">                 
-                            <div _ngcontent-serverapp-c124="" class="owl-carousel owl-theme owl-loaded owl-responsive owl-drag">
-                              <div _ngcontent-serverapp-c124="" class="owl-stage-outer ng-star-inserted">
-                                <owl-stage _ngcontent-serverapp-c124="" class="ng-tns-c125-0 ng-star-inserted">
-                                  <div class="ng-tns-c125-0">
-                                        <div class="owl-stage ng-tns-c125-0" style="width: 5325px; transform: translate3d(0px, 0px, 0px); transition: all;">
+                        <owl-carousel-o class="product-list__best-products" _nghost-serverapp-c124="">
+                            <div class="product-list__best-products owl-carousel owl-theme owl-loaded owl-responsive owl-drag ng-tns-c125-0 ng-star-inserted owl-stage">
+                                <owl-stage _ngcontent-serverapp-c124="" class="ng-tns-c125-3 ng-star-inserted">
+                                    <div class="carousel">
                                         ${products.map((product, index) => `
                                         <div class="owl-item ng-tns-c125-0 ng-trigger ng-trigger-autoHeight ng-star-inserted active" style="margin-right: 20px;">
-                                                <div class="ins-web-smart-recommender-box-item ng-star-inserted">
-                                                    <div event-collection="true" class="ins-product-box ins-element-link ins-add-to-cart-wrapper ins-sr-api" ins-product-id="BRU-BUA4000">                                                    <div event-collection="true" class="ins-product-box ins-element-link ins-add-to-cart-wrapper ins-sr-api" ins-product-id="BRU-BUA4000">
+                                            <div class="ins-web-smart-recommender-box-item ng-star-inserted" style="">
+                                                <div class="ins-web-smart-recommender-box-item ng-star-inserted" style="">
+                                                    <div event-collection="true" class="ins-product-box ins-element-link ins-add-to-cart-wrapper ins-sr-api" ins-product-id="DOL-8091">
                                                         <eb-carousel-product-item>
                                                             <div class="product-item">
                                                                 <div class="product-item-anchor" event-collection="true">
@@ -91,11 +115,10 @@ Pixel perfect replikasını yaparken sitedeki css ve html kodlarından faydaland
                                         `).join('')}
                                     </div>
                                 </owl-stage>
-                                </div>
+                                <button aria-label="back" class="swiper-prev my-prev"></button>
+                                <button aria-label="next" class="swiper-next my-next"></button>
                             </div>
                         </owl-carousel-o>
-                        <button aria-label="back" class="swiper-prev"></button>
-                        <button aria-label="next" class="swiper-next"></button>
                     </div>
                 </div>
             </div>
@@ -107,4 +130,119 @@ Pixel perfect replikasını yaparken sitedeki css ve html kodlarından faydaland
         if (productCarousel) { // Replikasını yapmak istediğimiz yerin üst kısmına html ekleme
             productCarousel.insertAdjacentHTML('afterbegin', html);
         }
-    } */
+        setEvents(); // tüm HTML tamamlandıktan sonra addEventListenerları ekleme
+    }
+
+    const buildCSS = () => { // Az biraz Responsive
+    const css = `     
+        @media (max-width: 580px) {
+            .owl-item {
+                width: 245px;
+            }
+        }
+
+        @media (min-width: 581px) and (max-width: 767px) {
+            .owl-item {
+                width: 245px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 993px) {
+            .owl-item {
+                width: 335px;
+            }
+        }
+
+        @media (min-width: 994px) and (max-width: 1280px) {
+            .owl-item {
+                width: 296.667px;
+            }
+        }
+
+        @media (min-width: 1281px) {
+            .owl-item {
+                width: 272.5px;
+            }
+        }
+
+        .heart-icon {
+            transform: scale(0.8);
+        }
+
+        .carousel {
+          transform-style: preserve-3d;
+          box-sizing: border-box;
+          overflow: hidden;
+        }
+
+    }  
+
+    
+
+    `; //.heart-icon siteden aldığım svg boyutunu küçültmek için kullandım
+    // .carousel ve birkaç css koduyla carousel yapmaya çalıştım fakat sitedeki kod karmaşıklığı nedeniyle istediğim gibi olmadı.
+
+        //     .owl-item {
+        //     display: flex;
+        //     overflow: hidden;
+        //     position: relative;
+        // }
+
+        // .product-item {
+        //     flex: 0 0 100%;
+        //     transition: transform 0.5s ease-in-out;
+        //     display: flex;
+        //     justify-content: center;
+        //     align-items: center;
+        // }
+
+    // Örnek koddaki css append kodu çalışmadı, değiştirmek zorunda kaldım.
+    const style = document.createElement('style');
+    style.className = 'carousel-style';
+    style.textContent = css;
+    document.head.appendChild(style);
+    };
+
+
+    const setEvents = () => {//Jquery yerine DOM ve addEventListener ile yapmak daha iyi oldu
+        const hearts = document.querySelectorAll('.heart');
+        console.log(hearts);
+        
+        hearts.forEach((heartIcon) => {
+            heartIcon.addEventListener('click', (event) => {
+                // console.log('Event Listening...');
+                const index = event.currentTarget.getAttribute('data-index');
+                ChangeFavorite(index);
+            });
+        });
+        // $('').on('click', () => {
+        //     console.log('clicked');
+        // });
+    };
+
+    const ChangeFavorite = (index) => {// Favori ekleme ve ya çıkarma
+        const products = JSON.parse(localStorage.getItem('products'));
+        const product = products[index];
+
+        if (product.favorite) {
+            product.favorite = false; 
+        }else {
+            product.favorite = true;
+        }
+
+        localStorage.setItem('products', JSON.stringify(products));
+        
+        //Favori ikonu değiştirme
+        const heartElement = document.querySelector(`#default-favorite-${product.id}`);
+        if (product.favorite) {
+            heartElement.src = 'https://www.svgrepo.com/show/406819/orange-heart.svg'; //Websiteden aldığım turuncu kalp
+        } else {
+            heartElement.src = 'assets/svg/default-favorite.svg';
+        }
+    };
+
+    init();
+})(); 
+
+
+
