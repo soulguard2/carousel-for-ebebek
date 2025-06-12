@@ -61,13 +61,13 @@
                                                         <eb-carousel-product-item>
                                                             <div class="product-item">
                                                                 <div class="product-item-anchor" event-collection="true">
-                                                                    <a class="product-item-anchor ng-star-inserted" href="${product.url}"  target="_blank">
+                                                                    <a class="product-item-anchor ng-star-inserted" href="${product.url}" target="_blank">
                                                                         <figure class="product-item__img without-ar ng-star-inserted">
                                                                         <img class="ng-star-inserted ls-is-cached lazyloaded" alt="${product.name}" data-src="${product.img}" src="${product.img}">
                                                                         </figure>
                                                                     </a>
                                                                     <div class="product-item-content ng-star-inserted">
-                                                                        <a class="product-item-anchor ng-star-inserted" href="${product.url}"  target="_blank">
+                                                                        <a class="product-item-anchor ng-star-inserted" href="${product.url}" target="_blank">
                                                                             <h2 class="product-item__brand ng-star-inserted"><b> ${product.brand} - </b><span> ${product.name} </span></h2>
                                                                             <div class="d-flex mb-2 stars-wrapper align-items-center ng-star-inserted">
                                                                                 <cx-star-rating disabled="true" style="--star-fill: 5;">
